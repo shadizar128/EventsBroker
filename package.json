@@ -1,0 +1,19 @@
+{
+  "name": "communicator",
+  "version": "1.0.0",
+  "description": "An example module to illustrate the usage of a package.json",
+  "author": "Shadizar Quarilla <shadizar128@yahoo.com>",
+  "contributors": [
+
+  ],
+  "scripts": {
+    "start": "node Server.js"
+  },
+  "dependencies": {
+    "websocket": "*"
+  },
+  "preferGlobal": false,
+  "private": true,
+  "analyze": false,
+  "license": "MIT"
+}
