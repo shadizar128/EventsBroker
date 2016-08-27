@@ -25,3 +25,10 @@ or
 - 2 types of subscribers
     - static ones (models, components)
     - dynamic ones (connections)
+    - lazy ones (wrapper over real class for lazy load)
+
+- IPC (inter process communication)
+    - web socket
+    - mq
+    - unix sockets
+    - shared memory?

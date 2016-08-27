@@ -26,6 +26,9 @@ class LazyObserver extends Observer {
      */
     destructor() {
 
+        // clear queue
+        this.queue = null
+
     }
 
     /**
@@ -78,7 +81,7 @@ class LazyObserver extends Observer {
         }, this);
 
         // clear queue
-        this.queue = [];
+        this.queue = null
 
     }
 

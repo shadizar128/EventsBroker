@@ -12,6 +12,8 @@ class Application {
 
         });
 
+        broker.fireEvent(new Event({name: 'postInit'}));
+
     }
 
 }
