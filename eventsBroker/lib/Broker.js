@@ -1,17 +1,16 @@
+var Base = require('./Base');
 var Channel = require('./Channel');
-var Event = require('./Event');
+var Singleton = require('./Mixins/Singleton');
 
-class Broker {
-
-    /**
-     * @type {Map}
-     */
-    channels;
+class Broker extends Singleton(Base) {
 
     /**
      * Class constructor
      */
-    constructor() {
+    constructor(config = {}) {
+
+        // call parent constructor
+        super(config);
 
         // init channels
         this.channels = new Map();
@@ -29,26 +28,14 @@ class Broker {
     }
 
     /**
-     * Get singleton
-     * @returns {Broker}
-     */
-    static getInstance() {
-
-        if (!Broker.instance) {
-            Broker.instance = new Broker();
-        }
-
-        return Broker.instance;
-
-    }
-
-    /**
      * Add a subscriber to a channel
      * @param {String} channelName
-     * @param {Subscriber} subscriber
+     * @param {Observer} subscriber
      * @returns {Broker}
      */
-    addSubscriber(channelName, subscriber) {
+    subscribe(channelName, subscriber) {
+
+        console.log('Subscribe to channel', {channelName, subscriber});
 
         // TODO: check if subscriber has processing method
 
@@ -76,12 +63,14 @@ class Broker {
     }
 
     /**
-     * Remove a subscriber from channel
+     * Remove a subscriber from a channel
      * @param {String} channelName
-     * @param {Subscriber} subscriber
+     * @param {Observer} subscriber
      * @returns {Broker}
      */
-    removeSubscriber(channelName, subscriber) {
+    unsubscribe(channelName, subscriber) {
+
+        console.log('Unsubscribe from channel', {channelName, subscriber});
 
         // get channel
         var channel = this.channels.get(channelName);
@@ -90,7 +79,7 @@ class Broker {
         if (channel) {
 
             // remove subscriber
-            channel.removeSubscriber(subscriber);
+            channel.unsubscribe(subscriber);
 
             // check if channel has any subscribers left
             if (!channel.hasSubscribers()) {
@@ -115,6 +104,8 @@ class Broker {
      * @param {Event} event
      */
     fireEvent(event) {
+
+        console.log('Event received', {broker: this, event});
 
         // fire event
         event.fire(this.channels.get(event.getName()));

@@ -1,14 +1,14 @@
-class Channel {
+var Base = require('./Base');
 
-    /**
-     * @type {Map}
-     */
-    subscribers;
+class Channel extends Base {
 
     /**
      * Class constructor
      */
-    constructor() {
+    constructor(config = {}) {
+
+        // call parent constructor
+        super(config);
 
         // init subscribers
         this.subscribers = new Map();
@@ -27,7 +27,7 @@ class Channel {
 
     /**
      * Add subscriber
-     * @param {Subscriber} subscriber
+     * @param {Observer} subscriber
      */
     addSubscriber(subscriber) {
 
@@ -40,7 +40,7 @@ class Channel {
 
     /**
      * Remove subscriber
-     * @param {Subscriber} subscriber
+     * @param {Observer} subscriber
      */
     removeSubscriber(subscriber) {
         this.subscribers.delete(subscriber);
@@ -56,7 +56,7 @@ class Channel {
 
     /**
      * Get channel subscribers
-     * @returns {Iterator.<Subscriber>}
+     * @returns {Iterator.<Observer>}
      */
     getSubscribers() {
         return this.subscribers.values();

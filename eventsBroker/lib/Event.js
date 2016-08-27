@@ -1,21 +1,18 @@
-class Event {
+var Base = require('./Base');
 
-    /**
-     * @type {String}
-     */
-    name;
-
-    /**
-     * @type {Boolean}
-     */
-    fired;
+class Event extends Base {
 
     /**
      * Class constructor
      */
-    constructor() {
+    constructor(config = {}) {
 
-        // TODO process args
+        // call parent constructor
+        super(config);
+
+        // TODO: remove this
+        this.name = config.name;
+        // TODO: process args
 
         // set status
         this.fired = false;
@@ -48,28 +45,32 @@ class Event {
             throw 'Event can only be fired once';
         }
 
+        console.log('Event channel', channel);
+
         // mark event as fired
         this.fired = true;
 
-        // get subscribers
-        var subscribers = Event.getSubscribers(channel);
+        // get observers
+        var observers = Event.getObservers(channel);
 
-        // subscribers left to observe the event
-        this.remaining = subscribers.length;
+        console.log('Event observers', observers);
 
-        // number of subscribers that have processed the event
+        // remaining observers
+        this.remaining = observers.length;
+
+        // observers that have processed the event
         this.processed = 0;
 
         if (this.remaining == 0) {
 
-            // no subscribers, invoke final callback
+            // no observers, invoke final callback
             this.finish();
 
         } else {
 
-            // invoke each subscriber's processing method
-            subscribers.forEach(function(subscriber) {
-                subscriber.onEvent(this);
+            // notify each observer
+            observers.forEach(function(observer) {
+                observer.onEvent(this);
             }, this);
 
         }
@@ -82,15 +83,17 @@ class Event {
      */
     onObserved(processed) {
 
-        // increase the number of subscribers that have processed the event
+        console.log('Event observed', {processed, event: this});
+
+        // increase the number of observers that have processed the event
         if (processed) {
             this.processed++;
         }
 
-        // decrement number of remaining subscribers
+        // decrement number of remaining observers
         this.remaining--;
 
-        // check if all subscribers are done and invoke the final callback
+        // check if all observers are done and invoke the final callback
         if (this.remaining == 0) {
             this.finish();
         }
@@ -102,36 +105,38 @@ class Event {
      */
     finish() {
 
+        console.log('Finish observing event', this);
+
         // assert status of event based on the event requirements and how many subscribers have processed it
         // invoke success or failure callback
 
     }
 
     /**
-     * Get subscribers that need to process this event based on event requirements and available subscribers
+     * Get observers that need to process this event based on event requirements and channel subscribers
      * There are 3 scenarios for event requirements
-     * - observable by all registered subscribers
+     * - observable by all channel subscribers
      * - observable by only one subscriber
-     * - observable by all subscribers that match a selection criteria
+     * - observable by all channel subscribers that match a selection criteria
      * @param channel
-     * @return {Subscriber[]}
+     * @return {Observer[]}
      */
-    static getSubscribers(channel) {
+    static getObservers(channel) {
 
-        var subscribers = [];
+        var observers = [];
 
         // check if channel exists
         if (channel) {
 
             // get all subscribers
             // TODO: apply criteria and event requirements
-            for (var subscriber of channel.values()) {
-                subscribers.push(subscriber);
+            for (var subscriber of channel.getSubscribers()) {
+                observers.push(subscriber);
             }
 
         }
 
-        return subscribers;
+        return observers;
 
     }
 
